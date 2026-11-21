@@ -108,6 +108,14 @@ def render_conversation(conversation=None):
                 st.info(f"**Evaluation Status: Under Review.** {summary}")
             st.markdown("---")
 
+        elif t == "conduct_flag":
+            st.error(
+                f"**Submission Flagged:** {entry.get('rationale', 'A communication conduct issue was identified.')}"
+            )
+            if entry.get("flagged_quote"):
+                st.caption(f"Excerpt: \"{entry['flagged_quote']}\"")
+            st.markdown("---")
+
         elif t == "admin_review":
             title, box = _REVIEW_MESSAGES.get(
                 entry.get("action"), ("Reviewer update.", st.info)

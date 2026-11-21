@@ -316,8 +316,8 @@ def process_video_submission(self, session_id, file_path, task_type="INITIAL"):
         retained_file = os.path.join(RETAINED_VIDEO_DIR, f"{session_id}.mp4")
 
         if file_path and os.path.abspath(file_path) != os.path.abspath(retained_file):
-            shutil.copy2(file_path, retained_file)
-        tmp_safe_to_delete = True  # copy done (or nothing to copy)
+            shutil.move(file_path, retained_file)
+        tmp_safe_to_delete = False  # file moved directly into retained_file
 
         if not os.path.exists(retained_file):
             raise FileNotFoundError(f"Retained video file missing: {retained_file}")

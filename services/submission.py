@@ -18,19 +18,28 @@ def submit_video(uploaded_file, session_id: str, educator_id: str, task_type: st
         logger.error("services.submission - Invalid session or unauthenticated user.")
         raise RuntimeError("Invalid session or unauthenticated user.")
 
-    logger.debug(f"services.submission - Processing video for session {session_id}")
-    file_bytes = uploaded_file.getvalue()
-    file_hash = hashlib.sha256(file_bytes).hexdigest()
+    logger.info(f"services.submission - Processing video for session {session_id}")
 
     extension = os.path.splitext(uploaded_file.name or "")[1].lower()
     if extension not in {".mp4", ".mov", ".webm"}:
         extension = ".mp4"
 
+    hasher = hashlib.sha256()
     tmp_path = None
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix=extension) as tmp:
-            tmp.write(file_bytes)
+            uploaded_file.seek(0)
+            while True:
+                chunk = uploaded_file.read(256 * 1024)
+                if not chunk:
+                    break
+                hasher.update(chunk)
+                tmp.write(chunk)
             tmp_path = tmp.name
+
+        file_hash = hasher.hexdigest()
+        import gc
+        gc.collect()
 
         with get_conn() as conn:
             try:

@@ -117,6 +117,7 @@ elif phase == "NOT_STARTED":
 elif phase in ("AWAITING_VIDEO", "FOLLOW_UP"):
     render_conversation()
     st.markdown("**Record a 1-3 minute video addressing the prompt above.**")
+    st.caption("💡 Recommended: 1–2 minutes in 720p/1080p (under 50 MB) for fastest AI evaluation.")
 
     upload_box = st.empty()
     with upload_box.container():
@@ -128,6 +129,10 @@ elif phase in ("AWAITING_VIDEO", "FOLLOW_UP"):
         submitted = st.button("Submit Video", disabled=st.session_state.get("submission_in_progress", False))
 
     if uploaded and submitted:
+        if getattr(uploaded, "size", 0) > 100 * 1024 * 1024:
+            st.error("⚠️ Video file is larger than 100 MB. Please record a 1–2 minute video at 720p/1080p or compress the file to under 80 MB.")
+            st.stop()
+
         st.session_state.submission_in_progress = True
         task_type = "INITIAL" if phase == "AWAITING_VIDEO" else "FOLLOW_UP"
         try:
@@ -155,10 +160,11 @@ elif phase in ("AWAITING_VIDEO", "FOLLOW_UP"):
         except ValueError as exc:
             st.error(str(exc))
         except Exception as exc:
+            logger.error("Submission failed: %s", exc, exc_info=True)
             from services.submission import revert_submission
             revert_submission(st.session_state.session_id)
-            st.error("Network connection issue detected. Please click 'Submit Video' again. Your work is saved.")
-            time.sleep(2)
+            st.error(f"Submission encountered an issue: {exc}. Please try submitting again.")
+            time.sleep(3)
             sync_from_db(force=True)
             st.rerun()
         finally:

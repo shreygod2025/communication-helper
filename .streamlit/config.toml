@@ -14,6 +14,7 @@ font = "sans serif"
 toolbarMode = "viewer"
 
 [server]
+address = "0.0.0.0"
 headless = true
 fileWatcherType = "none"
 enableCORS = false

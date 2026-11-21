@@ -55,9 +55,10 @@ if not API_KEY:
         pass
 
 if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in environment or .streamlit/secrets.toml")
-
-gemini_client = genai.Client(api_key=API_KEY)
+    logger.critical("GEMINI_API_KEY not found in environment or .streamlit/secrets.toml")
+    gemini_client = None
+else:
+    gemini_client = genai.Client(api_key=API_KEY)
 
 
 # ── Errors ───────────────────────────────────────────────────
@@ -162,6 +163,8 @@ def _candidates():
 def call_model(contents, schema, *, timeout_ms=TEXT_REQUEST_TIMEOUT_MS,
                passes=MODEL_CASCADE_PASSES, deadline_s=MODEL_CALL_DEADLINE_S,
                trace=None, label="call"):
+    if not gemini_client:
+        raise ModelCallError("GEMINI_API_KEY is not configured in environment.")
     trace = trace if trace is not None else []
     started = time.monotonic()
     outcomes = []

@@ -28,7 +28,12 @@ from worker.task import process_video_submission
 # ═════════════════════════════════════════════════════════════
 # INITIALIZATION
 # ═════════════════════════════════════════════════════════════
-init_db()
+try:
+    init_db()
+except Exception as _db_err:
+    import logging
+    logging.getLogger("educator_eval").critical(f"Database initialization failed: {_db_err}")
+    st.error(f"Database connection error: {_db_err}. Please verify DATABASE_URL in environment settings.")
 
 st.set_page_config(
     page_title="OLL Evaluation System",

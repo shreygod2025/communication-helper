@@ -4,6 +4,7 @@ Scenario generation via Gemini.
 """
 import os
 import random
+from typing import Optional
 from google import genai
 from google.genai import types
 from core.config import logger
@@ -62,7 +63,7 @@ FALLBACK_SCENARIOS = [
 FALLBACK_SCENARIO = FALLBACK_SCENARIOS[0]
 
 
-def generate_scenario(api_key: str | None = None) -> str:
+def generate_scenario(api_key: Optional[str] = None) -> str:
     """Call Gemini to produce a fresh scenario; fall back to a static one on error."""
     logger.debug("services.scenario.generate_scenario - Generating dynamic scenario...")
     try:

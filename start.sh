@@ -5,7 +5,7 @@ set -e
 export PGSSLMODE=${PGSSLMODE:-require}
 
 echo "Starting Celery worker in the background..."
-celery -A tasks worker --concurrency=2 --loglevel=info &
+celery -A tasks worker --concurrency=1 --pool=threads --loglevel=info &
 
 echo "Starting Streamlit on port ${PORT:-8501}..."
 streamlit run app.py --server.port "${PORT:-8501}" --server.address 0.0.0.0 --server.headless true --server.fileWatcherType none --browser.gatherUsageStats false

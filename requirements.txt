@@ -5,3 +5,4 @@ redis
 psycopg2-binary
 pandas
 httpx
+tomli; python_version < "3.11"

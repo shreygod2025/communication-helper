@@ -16,7 +16,13 @@ import os
 import json
 import time
 import random
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    try:
+        import tomli as tomllib
+    except ModuleNotFoundError:
+        tomllib = None
 
 import httpx
 from celery import Celery
@@ -43,7 +49,7 @@ celery_app.conf.update(
 # ── API Key ──────────────────────────────────────────────────
 API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not API_KEY:
+if not API_KEY and tomllib is not None:
     try:
         _secrets = os.path.join(
             os.path.dirname(os.path.dirname(os.path.abspath(__file__))),

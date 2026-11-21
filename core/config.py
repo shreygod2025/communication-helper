@@ -1,7 +1,13 @@
 # core/config.py
 import os
 import logging
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    try:
+        import tomli as tomllib
+    except ModuleNotFoundError:
+        tomllib = None
 from pathlib import Path
 
 # ---------------------------------------------------------
@@ -28,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRETS_PATH = BASE_DIR / ".streamlit" / "secrets.toml"
 
 config_data = {}
-if SECRETS_PATH.exists():
+if SECRETS_PATH.exists() and tomllib is not None:
     try:
         with open(SECRETS_PATH, "rb") as f:
             config_data = tomllib.load(f)

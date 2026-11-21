@@ -4,6 +4,13 @@ set -e
 # Enforce SSL for cloud PostgreSQL (Neon, Render, Supabase) if not explicitly set
 export PGSSLMODE=${PGSSLMODE:-require}
 
+if [ -f .env ]; then
+  echo "Loading environment variables from .env file..."
+  set -a
+  source .env
+  set +a
+fi
+
 # Force Linux glibc to release freed heap memory back to the OS immediately
 export MALLOC_TRIM_THRESHOLD_=65536
 export PYTHONUNBUFFERED=1

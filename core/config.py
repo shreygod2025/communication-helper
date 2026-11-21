@@ -8,11 +8,17 @@ from pathlib import Path
 # 1. ATOMIC LOGGING SETUP
 # ---------------------------------------------------------
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s | %(levelname)-8s | %(module)-12s | %(funcName)-20s | %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger("educator_eval")
+logger.setLevel(logging.DEBUG)
+
+# Silence verbose file watchers and network debuggers on cloud servers
+for _noisy in ("watchdog", "inotify_move_event_grouper", "urllib3", "httpcore", "httpcore2", "asyncio"):
+    logging.getLogger(_noisy).setLevel(logging.WARNING)
+
 logger.debug("core.config - Logger initialized. Starting configuration load.")
 
 # ---------------------------------------------------------

@@ -8,4 +8,4 @@ echo "Starting Celery worker in the background..."
 celery -A tasks worker --loglevel=info &
 
 echo "Starting Streamlit on port ${PORT:-8501}..."
-streamlit run app.py --server.port "${PORT:-8501}" --server.address 0.0.0.0 --server.headless true --browser.gatherUsageStats false
+streamlit run app.py --server.port "${PORT:-8501}" --server.address 0.0.0.0 --server.headless true --server.fileWatcherType none --browser.gatherUsageStats false

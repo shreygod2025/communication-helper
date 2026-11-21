@@ -12,3 +12,11 @@ font = "sans serif"
 [client]
 # Completely removes the "Deploy", "Stop", and Theme toggle menu for end-users
 toolbarMode = "viewer"
+
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
